@@ -63182,128 +63182,80 @@ namespace adf {
 
 
 
-# 1 "./ProcessUnit/include.h" 1
-# 13 "./ProcessUnit/include.h"
-       
-# 6 "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h" 2
-# 1 "./ProcessUnit/hdiff.h" 1
-       
-
-
-
-void hdiff_lap(input_window_int32* row0,
-               input_window_int32* row1,
-               input_window_int32* row2,
-               input_window_int32* row3,
-               input_window_int32* row4,
-               output_window_int32* out_flux1,
-               output_window_int32* out_flux2,
-               output_window_int32* out_flux3,
-               output_window_int32* out_flux4);
-
-void hdiff_flux1(input_window_int32* row1,
-                 input_window_int32* row2,
-                 input_window_int32* row3,
-                 input_window_int32* flux_forward1,
-                 input_window_int32* flux_forward2,
-                 input_window_int32* flux_forward3,
-                 input_window_int32* flux_forward4,
-                 output_window_int32* flux_inter1,
-                 output_window_int32* flux_inter2,
-                 output_window_int32* flux_inter3,
-                 output_window_int32* flux_inter4,
-                 output_window_int32* flux_inter5);
-
-void hdiff_flux2(input_window_int32* flux_inter1,
-                 input_window_int32* flux_inter2,
-                 input_window_int32* flux_inter3,
-                 input_window_int32* flux_inter4,
-                 input_window_int32* flux_inter5,
-                 output_window_int32* out);
-# 7 "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h" 2
-
-class StencilCoreGraph : public adf::graph {
+using namespace adf;
+# 17 "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h"
+class StencilCoreGraph : public graph {
 public:
-    adf::port<input> row0_lap; decltype(adf::frontend::instrument< decltype(row0_lap) > (row0_lap)) __ci1__ = adf::frontend::instrument< decltype(row0_lap) > ( row0_lap, "row0_lap", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:10:5", adf::frontend::getParentGraphImpl(*this));
-    adf::port<input> row1_lap; decltype(adf::frontend::instrument< decltype(row1_lap) > (row1_lap)) __ci2__ = adf::frontend::instrument< decltype(row1_lap) > ( row1_lap, "row1_lap", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:11:5", adf::frontend::getParentGraphImpl(*this));
-    adf::port<input> row2_lap; decltype(adf::frontend::instrument< decltype(row2_lap) > (row2_lap)) __ci3__ = adf::frontend::instrument< decltype(row2_lap) > ( row2_lap, "row2_lap", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:12:5", adf::frontend::getParentGraphImpl(*this));
-    adf::port<input> row3_lap; decltype(adf::frontend::instrument< decltype(row3_lap) > (row3_lap)) __ci4__ = adf::frontend::instrument< decltype(row3_lap) > ( row3_lap, "row3_lap", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:13:5", adf::frontend::getParentGraphImpl(*this));
-    adf::port<input> row4_lap; decltype(adf::frontend::instrument< decltype(row4_lap) > (row4_lap)) __ci5__ = adf::frontend::instrument< decltype(row4_lap) > ( row4_lap, "row4_lap", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:14:5", adf::frontend::getParentGraphImpl(*this));
+    port<input> in[8]; decltype(adf::frontend::instrument< decltype(in) > (in)) __ci1__ = adf::frontend::instrument< decltype(in) > ( in, "in", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:19:5", adf::frontend::getParentGraphImpl(*this));
+    port<output> out; decltype(adf::frontend::instrument< decltype(out) > (out)) __ci2__ = adf::frontend::instrument< decltype(out) > ( out, "out", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:20:5", adf::frontend::getParentGraphImpl(*this));
 
-    adf::port<input> row1_flux; decltype(adf::frontend::instrument< decltype(row1_flux) > (row1_flux)) __ci6__ = adf::frontend::instrument< decltype(row1_flux) > ( row1_flux, "row1_flux", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:16:5", adf::frontend::getParentGraphImpl(*this));
-    adf::port<input> row2_flux; decltype(adf::frontend::instrument< decltype(row2_flux) > (row2_flux)) __ci7__ = adf::frontend::instrument< decltype(row2_flux) > ( row2_flux, "row2_flux", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:17:5", adf::frontend::getParentGraphImpl(*this));
-    adf::port<input> row3_flux; decltype(adf::frontend::instrument< decltype(row3_flux) > (row3_flux)) __ci8__ = adf::frontend::instrument< decltype(row3_flux) > ( row3_flux, "row3_flux", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:18:5", adf::frontend::getParentGraphImpl(*this));
-
-    adf::port<output> out; decltype(adf::frontend::instrument< decltype(out) > (out)) __ci9__ = adf::frontend::instrument< decltype(out) > ( out, "out", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:20:5", adf::frontend::getParentGraphImpl(*this));
-
-    adf::kernel k_lap; decltype(adf::frontend::instrument< decltype(k_lap) > (k_lap)) __ci10__ = adf::frontend::instrument< decltype(k_lap) > ( k_lap, "k_lap", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:22:5", adf::frontend::getParentGraphImpl(*this));
-    adf::kernel k_flux1; decltype(adf::frontend::instrument< decltype(k_flux1) > (k_flux1)) __ci11__ = adf::frontend::instrument< decltype(k_flux1) > ( k_flux1, "k_flux1", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:23:5", adf::frontend::getParentGraphImpl(*this));
-    adf::kernel k_flux2; decltype(adf::frontend::instrument< decltype(k_flux2) > (k_flux2)) __ci12__ = adf::frontend::instrument< decltype(k_flux2) > ( k_flux2, "k_flux2", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:24:5", adf::frontend::getParentGraphImpl(*this));
-
-    
-adf::frontend::SignalHandler __ci14__;
-static constexpr int ROW_BYTES = 256 * sizeof(int32_t); decltype(adf::frontend::instrument< decltype(ROW_BYTES) > (ROW_BYTES)) __ci13__ = adf::frontend::instrument< decltype(ROW_BYTES) > ( ROW_BYTES, "ROW_BYTES", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:26:5", nullptr, "");
-    static constexpr int FLUX_FWD_BYTES = 256 * sizeof(int32_t); decltype(adf::frontend::instrument< decltype(FLUX_FWD_BYTES) > (FLUX_FWD_BYTES)) __ci15__ = adf::frontend::instrument< decltype(FLUX_FWD_BYTES) > ( FLUX_FWD_BYTES, "FLUX_FWD_BYTES", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:27:5", nullptr, "");
-    static constexpr int FLUX_INTER_BYTES = 2 * 256 * sizeof(int32_t); decltype(adf::frontend::instrument< decltype(FLUX_INTER_BYTES) > (FLUX_INTER_BYTES)) __ci16__ = adf::frontend::instrument< decltype(FLUX_INTER_BYTES) > ( FLUX_INTER_BYTES, "FLUX_INTER_BYTES", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:28:5", nullptr, "");
+    kernel k_lap; decltype(adf::frontend::instrument< decltype(k_lap) > (k_lap)) __ci3__ = adf::frontend::instrument< decltype(k_lap) > ( k_lap, "k_lap", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:22:5", adf::frontend::getParentGraphImpl(*this));
+    kernel k_flux1; decltype(adf::frontend::instrument< decltype(k_flux1) > (k_flux1)) __ci4__ = adf::frontend::instrument< decltype(k_flux1) > ( k_flux1, "k_flux1", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:23:5", adf::frontend::getParentGraphImpl(*this));
+    kernel k_flux2; decltype(adf::frontend::instrument< decltype(k_flux2) > (k_flux2)) __ci5__ = adf::frontend::instrument< decltype(k_flux2) > ( k_flux2, "k_flux2", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:24:5", adf::frontend::getParentGraphImpl(*this));
 
     StencilCoreGraph() {
-        using namespace adf;
+        static_assert(N == 1, "tri-hdiff lane has one final output row");
 
-        k_lap = kernel::create(hdiff_lap); adf::frontend::CallExprKernelCreate __ci17__{"hdiff_lap",false, "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:33:17", {"input_window<int> *", "input_window<int> *", "input_window<int> *", "input_window<int> *", "input_window<int> *", "output_window<int> *", "output_window<int> *", "output_window<int> *", "output_window<int> *"}, {"row0", "row1", "row2", "row3", "row4", "out_flux1", "out_flux2", "out_flux3", "out_flux4"}, "void", "", ""};
-        k_flux1 = kernel::create(hdiff_flux1); adf::frontend::CallExprKernelCreate __ci18__{"hdiff_flux1",false, "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:34:19", {"input_window<int> *", "input_window<int> *", "input_window<int> *", "input_window<int> *", "input_window<int> *", "input_window<int> *", "input_window<int> *", "output_window<int> *", "output_window<int> *", "output_window<int> *", "output_window<int> *", "output_window<int> *"}, {"row1", "row2", "row3", "flux_forward1", "flux_forward2", "flux_forward3", "flux_forward4", "flux_inter1", "flux_inter2", "flux_inter3", "flux_inter4", "flux_inter5"}, "void", "", ""};
-        k_flux2 = kernel::create(hdiff_flux2); adf::frontend::CallExprKernelCreate __ci19__{"hdiff_flux2",false, "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:35:19", {"input_window<int> *", "input_window<int> *", "input_window<int> *", "input_window<int> *", "input_window<int> *", "output_window<int> *"}, {"flux_inter1", "flux_inter2", "flux_inter3", "flux_inter4", "flux_inter5", "out"}, "void", "", ""};
+        k_lap = kernel::create(hdiff_lap);
+        k_flux1 = kernel::create(hdiff_flux1);
+        k_flux2 = kernel::create(hdiff_flux2);
 
-        source(k_lap) = "ProcessUnit/hdiff_lap.cc"; adf::frontend::CallExprConstraintFunction __ci20__{"adf::source", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:37:9"};
-        source(k_flux1) = "ProcessUnit/hdiff_flux1.cc"; adf::frontend::CallExprConstraintFunction __ci21__{"adf::source", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:38:9"};
-        source(k_flux2) = "ProcessUnit/hdiff_flux2.cc"; adf::frontend::CallExprConstraintFunction __ci22__{"adf::source", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:39:9"};
+        source(k_lap) = "ProcessUnit/stencil_kernel.cc"; adf::frontend::CallExprConstraintFunction __ci6__{"adf::source", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:33:9"};
+        source(k_flux1) = "ProcessUnit/stencil_kernel.cc"; adf::frontend::CallExprConstraintFunction __ci7__{"adf::source", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:34:9"};
+        source(k_flux2) = "ProcessUnit/stencil_kernel.cc"; adf::frontend::CallExprConstraintFunction __ci8__{"adf::source", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:35:9"};
 
-        headers(k_lap) = {"ProcessUnit/include.h", "ProcessUnit/hdiff.h"}; adf::frontend::CallExprConstraintFunction __ci23__{"adf::headers", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:41:9"};
-        headers(k_flux1) = {"ProcessUnit/include.h", "ProcessUnit/hdiff.h"}; adf::frontend::CallExprConstraintFunction __ci24__{"adf::headers", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:42:9"};
-        headers(k_flux2) = {"ProcessUnit/include.h", "ProcessUnit/hdiff.h"}; adf::frontend::CallExprConstraintFunction __ci25__{"adf::headers", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:43:9"};
+        headers(k_lap) = {"ProcessUnit/stencil_kernel.h", "ProcessUnit/hdiff.h", "ProcessUnit/include.h"}; adf::frontend::CallExprConstraintFunction __ci9__{"adf::headers", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:37:9"};
+        headers(k_flux1) = {"ProcessUnit/stencil_kernel.h", "ProcessUnit/hdiff.h", "ProcessUnit/include.h"}; adf::frontend::CallExprConstraintFunction __ci10__{"adf::headers", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:38:9"};
+        headers(k_flux2) = {"ProcessUnit/stencil_kernel.h", "ProcessUnit/hdiff.h", "ProcessUnit/include.h"}; adf::frontend::CallExprConstraintFunction __ci11__{"adf::headers", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:39:9"};
 
-        runtime<ratio>(k_lap) = 0.9; adf::frontend::CallExprConstraintFunction __ci26__{"adf::runtime<adf::ratio>", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:45:9"};
-        runtime<ratio>(k_flux1) = 0.9; adf::frontend::CallExprConstraintFunction __ci27__{"adf::runtime<adf::ratio>", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:46:9"};
-        runtime<ratio>(k_flux2) = 0.9; adf::frontend::CallExprConstraintFunction __ci28__{"adf::runtime<adf::ratio>", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:47:9"};
+        runtime<ratio>(k_lap) = 0.9; adf::frontend::CallExprConstraintFunction __ci12__{"adf::runtime<adf::ratio>", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:41:9"};
+        runtime<ratio>(k_flux1) = 0.9; adf::frontend::CallExprConstraintFunction __ci13__{"adf::runtime<adf::ratio>", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:42:9"};
+        runtime<ratio>(k_flux2) = 0.9; adf::frontend::CallExprConstraintFunction __ci14__{"adf::runtime<adf::ratio>", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:43:9"};
 
-        location<kernel>(k_lap) = tile(7, 1); adf::frontend::CallExprLocationConstraint __ci29__{"adf::location<adf::kernel>", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:49:9"}; adf::frontend::CallExprLocationConstraint __ci30__{"adf::tile", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:49:35"};
-        location<kernel>(k_flux1) = tile(7, 2); adf::frontend::CallExprLocationConstraint __ci31__{"adf::location<adf::kernel>", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:50:9"}; adf::frontend::CallExprLocationConstraint __ci32__{"adf::tile", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:50:37"};
-        location<kernel>(k_flux2) = tile(7, 3); adf::frontend::CallExprLocationConstraint __ci33__{"adf::location<adf::kernel>", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:51:9"}; adf::frontend::CallExprLocationConstraint __ci34__{"adf::tile", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:51:37"};
 
-        connect<window<ROW_BYTES>>(row0_lap, k_lap.in[0]); adf::frontend::DeclConnect __ci35__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:53:9", ""};
-        connect<window<ROW_BYTES>>(row1_lap, k_lap.in[1]); adf::frontend::DeclConnect __ci36__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:54:9", ""};
-        connect<window<ROW_BYTES>>(row2_lap, k_lap.in[2]); adf::frontend::DeclConnect __ci37__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:55:9", ""};
-        connect<window<ROW_BYTES>>(row3_lap, k_lap.in[3]); adf::frontend::DeclConnect __ci38__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:56:9", ""};
-        connect<window<ROW_BYTES>>(row4_lap, k_lap.in[4]); adf::frontend::DeclConnect __ci39__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:57:9", ""};
+        location<kernel>(k_lap) = tile(7, 1); adf::frontend::CallExprLocationConstraint __ci15__{"adf::location<adf::kernel>", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:46:9"}; adf::frontend::CallExprLocationConstraint __ci16__{"adf::tile", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:46:35"};
+        location<kernel>(k_flux1) = tile(7, 2); adf::frontend::CallExprLocationConstraint __ci17__{"adf::location<adf::kernel>", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:47:9"}; adf::frontend::CallExprLocationConstraint __ci18__{"adf::tile", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:47:37"};
+        location<kernel>(k_flux2) = tile(7, 3); adf::frontend::CallExprLocationConstraint __ci19__{"adf::location<adf::kernel>", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:48:9"}; adf::frontend::CallExprLocationConstraint __ci20__{"adf::tile", "/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:48:37"};
 
-        connect<window<ROW_BYTES>>(row1_flux, k_flux1.in[0]); adf::frontend::DeclConnect __ci40__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:59:9", ""};
-        connect<window<ROW_BYTES>>(row2_flux, k_flux1.in[1]); adf::frontend::DeclConnect __ci41__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:60:9", ""};
-        connect<window<ROW_BYTES>>(row3_flux, k_flux1.in[2]); adf::frontend::DeclConnect __ci42__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:61:9", ""};
 
-        connect<window<FLUX_FWD_BYTES>>(k_lap.out[0], k_flux1.in[3]); adf::frontend::DeclConnect __ci43__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:63:9", ""};
-        connect<window<FLUX_FWD_BYTES>>(k_lap.out[1], k_flux1.in[4]); adf::frontend::DeclConnect __ci44__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:64:9", ""};
-        connect<window<FLUX_FWD_BYTES>>(k_lap.out[2], k_flux1.in[5]); adf::frontend::DeclConnect __ci45__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:65:9", ""};
-        connect<window<FLUX_FWD_BYTES>>(k_lap.out[3], k_flux1.in[6]); adf::frontend::DeclConnect __ci46__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:66:9", ""};
+        connect(in[0], k_lap.in[0]); adf::frontend::DeclConnect __ci21__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:51:9", ""};
+        connect(in[1], k_lap.in[1]); adf::frontend::DeclConnect __ci22__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:52:9", ""};
+        connect(in[2], k_lap.in[2]); adf::frontend::DeclConnect __ci23__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:53:9", ""};
+        connect(in[3], k_lap.in[3]); adf::frontend::DeclConnect __ci24__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:54:9", ""};
+        connect(in[4], k_lap.in[4]); adf::frontend::DeclConnect __ci25__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:55:9", ""};
 
-        connect<window<FLUX_INTER_BYTES>>(k_flux1.out[0], k_flux2.in[0]); adf::frontend::DeclConnect __ci47__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:68:9", ""};
-        connect<window<FLUX_INTER_BYTES>>(k_flux1.out[1], k_flux2.in[1]); adf::frontend::DeclConnect __ci48__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:69:9", ""};
-        connect<window<FLUX_INTER_BYTES>>(k_flux1.out[2], k_flux2.in[2]); adf::frontend::DeclConnect __ci49__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:70:9", ""};
-        connect<window<FLUX_INTER_BYTES>>(k_flux1.out[3], k_flux2.in[3]); adf::frontend::DeclConnect __ci50__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:71:9", ""};
-        connect<window<FLUX_INTER_BYTES>>(k_flux1.out[4], k_flux2.in[4]); adf::frontend::DeclConnect __ci51__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:72:9", ""};
 
-        connect<window<ROW_BYTES>>(k_flux2.out[0], out); adf::frontend::DeclConnect __ci52__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:74:9", ""};
+        connect(in[5], k_flux1.in[0]); adf::frontend::DeclConnect __ci26__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:58:9", ""};
+        connect(in[6], k_flux1.in[1]); adf::frontend::DeclConnect __ci27__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:59:9", ""};
+        connect(in[7], k_flux1.in[2]); adf::frontend::DeclConnect __ci28__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:60:9", ""};
+
+
+        connect(k_lap.out[0], k_flux1.in[3]); adf::frontend::DeclConnect __ci29__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:63:9", ""};
+        connect(k_lap.out[1], k_flux1.in[4]); adf::frontend::DeclConnect __ci30__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:64:9", ""};
+        connect(k_lap.out[2], k_flux1.in[5]); adf::frontend::DeclConnect __ci31__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:65:9", ""};
+        connect(k_lap.out[3], k_flux1.in[6]); adf::frontend::DeclConnect __ci32__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:66:9", ""};
+
+
+        connect(k_flux1.out[0], k_flux2.in[0]); adf::frontend::DeclConnect __ci33__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:69:9", ""};
+        connect(k_flux1.out[1], k_flux2.in[1]); adf::frontend::DeclConnect __ci34__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:70:9", ""};
+        connect(k_flux1.out[2], k_flux2.in[2]); adf::frontend::DeclConnect __ci35__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:71:9", ""};
+        connect(k_flux1.out[3], k_flux2.in[3]); adf::frontend::DeclConnect __ci36__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:72:9", ""};
+        connect(k_flux1.out[4], k_flux2.in[4]); adf::frontend::DeclConnect __ci37__{"/media/4T/home/xianyijiang/my_sparta/aie/./ProcessGraph/StencilCoreGraph.h:73:9", ""};
+
+
+        connect(k_flux2.out[0], out[0]);
     }
 };
 # 5 "/media/4T/home/xianyijiang/my_sparta/aie/./TopGraph.h" 2
 
 using namespace adf;
 
-template<int N>
 class TopStencilGraph : public graph {
 public:
-    StencilCoreGraph<N> core;
+    StencilCoreGraph core; decltype(adf::frontend::instrument< decltype(core) > (core)) __ci38__ = adf::frontend::instrument< decltype(core) > ( core, "core", "/media/4T/home/xianyijiang/my_sparta/aie/./TopGraph.h:10:5", adf::frontend::getParentGraphImpl(*this));
 
-    input_plio in_plio[8]; decltype(adf::frontend::instrument< decltype(in_plio) > (in_plio)) __ci53__ = adf::frontend::instrument< decltype(in_plio) > ( in_plio, "in_plio", "/media/4T/home/xianyijiang/my_sparta/aie/./TopGraph.h:13:5", adf::frontend::getParentGraphImpl(*this));
-    output_plio out_plio[N]; decltype(adf::frontend::instrument< decltype(out_plio) > (out_plio)) __ci54__ = adf::frontend::instrument< decltype(out_plio) > ( out_plio, "out_plio", "/media/4T/home/xianyijiang/my_sparta/aie/./TopGraph.h:14:5", adf::frontend::getParentGraphImpl(*this));
+    input_plio in_plio[8]; decltype(adf::frontend::instrument< decltype(in_plio) > (in_plio)) __ci39__ = adf::frontend::instrument< decltype(in_plio) > ( in_plio, "in_plio", "/media/4T/home/xianyijiang/my_sparta/aie/./TopGraph.h:12:5", adf::frontend::getParentGraphImpl(*this));
+    output_plio out_plio; decltype(adf::frontend::instrument< decltype(out_plio) > (out_plio)) __ci40__ = adf::frontend::instrument< decltype(out_plio) > ( out_plio, "out_plio", "/media/4T/home/xianyijiang/my_sparta/aie/./TopGraph.h:13:5", adf::frontend::getParentGraphImpl(*this));
 
     TopStencilGraph(const std::string& graphID) {
         const std::string base = "./data/";
@@ -63316,26 +63268,30 @@ public:
             );
         }
 
-        for (int i = 0; i < N; i++) {
-            out_plio[i] = output_plio::create(
-                graphID + "_out" + std::to_string(i),
-                plio_32_bits,
-                base + graphID + "_outputaie" + std::to_string(i) + ".txt"
-            );
-        }
+        out_plio = output_plio::create(
+            graphID + "_out0",
+            plio_32_bits,
+            base + graphID + "_outputaie0.txt"
+        );
 
-        for (int i = 0; i < 8; i++) {
-            connect(in_plio[i].out[0], core.in[i]);
-        }
+        connect(in_plio[0].out[0], core.row0_lap);
+        connect(in_plio[1].out[0], core.row1_lap);
+        connect(in_plio[2].out[0], core.row2_lap);
+        connect(in_plio[3].out[0], core.row3_lap);
+        connect(in_plio[4].out[0], core.row4_lap);
 
-        for (int i = 0; i < N; i++) {
-            connect(core.out[i], out_plio[i].in[0]);
-        }
+        connect(in_plio[5].out[0], core.row1_flux);
+        connect(in_plio[6].out[0], core.row2_flux);
+        connect(in_plio[7].out[0], core.row3_flux);
+
+        connect(core.out, out_plio.in[0]); adf::frontend::DeclConnect __ci41__{"/media/4T/home/xianyijiang/my_sparta/aie/./TopGraph.h:42:9", ""};
     }
 };
 # 2 "/media/4T/home/xianyijiang/my_sparta/aie/./TopGraph.cpp" 2
 
-TopStencilGraph<1> topStencil("hdiff"); decltype(adf::frontend::instrument< decltype(topStencil) > (topStencil)) __ci55__ = adf::frontend::instrument< decltype(topStencil) > ( topStencil, "topStencil", "/media/4T/home/xianyijiang/my_sparta/aie/./TopGraph.cpp:3:1", nullptr, "/media/4T/home/xianyijiang/my_sparta/aie/./TopGraph.h:9:1");
+
+adf::frontend::SignalHandler __ci43__;
+TopStencilGraph topStencil("hdiff"); decltype(adf::frontend::instrument< decltype(topStencil) > (topStencil)) __ci42__ = adf::frontend::instrument< decltype(topStencil) > ( topStencil, "topStencil", "/media/4T/home/xianyijiang/my_sparta/aie/./TopGraph.cpp:3:1", nullptr, "/media/4T/home/xianyijiang/my_sparta/aie/./TopGraph.h:8:1");
 
 int main(int argc, char** argv)
 {

@@ -1,6 +1,6 @@
 #include "TopGraph.h"
 
-TopStencilGraph<1> topStencil("hdiff");
+TopStencilGraph topStencil("hdiff");
 
 #if defined(__AIESIM__) || defined(__X86SIM__)
 int main() {

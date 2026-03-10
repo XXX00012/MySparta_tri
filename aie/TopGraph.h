@@ -5,13 +5,12 @@
 
 using namespace adf;
 
-template<int N>
 class TopStencilGraph : public graph {
 public:
-    StencilCoreGraph<N> core;
+    StencilCoreGraph core;
 
     input_plio  in_plio[8];
-    output_plio out_plio[N];
+    output_plio out_plio;
 
     TopStencilGraph(const std::string& graphID) {
         const std::string base = "./data/";
@@ -24,20 +23,22 @@ public:
             );
         }
 
-        for (int i = 0; i < N; i++) {
-            out_plio[i] = output_plio::create(
-                graphID + "_out" + std::to_string(i),
-                plio_32_bits,
-                base + graphID + "_outputaie" + std::to_string(i) + ".txt"
-            );
-        }
+        out_plio = output_plio::create(
+            graphID + "_out0",
+            plio_32_bits,
+            base + graphID + "_outputaie0.txt"
+        );
 
-        for (int i = 0; i < 8; i++) {
-            connect(in_plio[i].out[0], core.in[i]);
-        }
+        connect(in_plio[0].out[0], core.row0_lap);
+        connect(in_plio[1].out[0], core.row1_lap);
+        connect(in_plio[2].out[0], core.row2_lap);
+        connect(in_plio[3].out[0], core.row3_lap);
+        connect(in_plio[4].out[0], core.row4_lap);
 
-        for (int i = 0; i < N; i++) {
-            connect(core.out[i], out_plio[i].in[0]);
-        }
+        connect(in_plio[5].out[0], core.row1_flux);
+        connect(in_plio[6].out[0], core.row2_flux);
+        connect(in_plio[7].out[0], core.row3_flux);
+
+        connect(core.out, out_plio.in[0]);
     }
 };

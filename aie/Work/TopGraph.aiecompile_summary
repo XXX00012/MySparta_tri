@@ -9,10 +9,10 @@
 <ENTRY>
 {
  "type": "ET_CmdStep",
- "dateTimestamp": "Mon Mar  9 19:29:43 2026",
- "timestampMillis": "1773055783769",
+ "dateTimestamp": "Tue Mar 10 12:13:29 2026",
+ "timestampMillis": "1773116009939",
  "buildStep": {
-  "cmdId": "d3fb984d-1a87-4bcf-9efd-b54d7f176296",
+  "cmdId": "4e37db4d-f268-4da0-b0a1-b63abadf97e9",
   "name": "aiecompiler",
   "logFile": "/media/4T/home/xianyijiang/my_sparta/aie/AIECompiler.log",
   "commandLine": "/usr/xilinx/Vitis/2023.2/aietools/bin/unwrapped/lnx64.o/aiecompiler --config /media/4T/home/xianyijiang/my_sparta/aie/Work/aie_hw.cfg ",
@@ -34,10 +34,10 @@
 <ENTRY>
 {
  "type": "ET_Status",
- "dateTimestamp": "Mon Mar  9 19:29:43 2026",
- "timestampMillis": "1773055783770",
+ "dateTimestamp": "Tue Mar 10 12:13:29 2026",
+ "timestampMillis": "1773116009939",
  "status": {
-  "cmdId": "d3fb984d-1a87-4bcf-9efd-b54d7f176296",
+  "cmdId": "4e37db4d-f268-4da0-b0a1-b63abadf97e9",
   "state": "CS_RUNNING"
  }
 }
@@ -45,8 +45,8 @@
 <ENTRY>
 {
  "type": "ET_FlowMetaData",
- "dateTimestamp": "Mon Mar  9 19:29:43 2026",
- "timestampMillis": "1773055783770",
+ "dateTimestamp": "Tue Mar 10 12:13:29 2026",
+ "timestampMillis": "1773116009939",
  "buildSummary": {
   "hardwarePlatform": "",
   "hardwareDsa": "",
@@ -63,8 +63,8 @@
 <ENTRY>
 {
  "type": "ET_Report",
- "dateTimestamp": "Mon Mar  9 19:29:43 2026",
- "timestampMillis": "1773055783771",
+ "dateTimestamp": "Tue Mar 10 12:13:29 2026",
+ "timestampMillis": "1773116009940",
  "report": {
   "path": "/media/4T/home/xianyijiang/my_sparta/aie/Work",
   "name": "",
@@ -77,8 +77,8 @@
 <ENTRY>
 {
  "type": "ET_Report",
- "dateTimestamp": "Mon Mar  9 19:29:43 2026",
- "timestampMillis": "1773055783772",
+ "dateTimestamp": "Tue Mar 10 12:13:29 2026",
+ "timestampMillis": "1773116009940",
  "report": {
   "path": "/media/4T/home/xianyijiang/my_sparta/aie/Work/reports/guidance.html",
   "name": "",
@@ -91,8 +91,8 @@
 <ENTRY>
 {
  "type": "ET_Report",
- "dateTimestamp": "Mon Mar  9 19:29:43 2026",
- "timestampMillis": "1773055783772",
+ "dateTimestamp": "Tue Mar 10 12:13:29 2026",
+ "timestampMillis": "1773116009941",
  "report": {
   "path": "/media/4T/home/xianyijiang/my_sparta/aie/Work/reports/guidance.pb3",
   "name": "",
@@ -105,10 +105,10 @@
 <ENTRY>
 {
  "type": "ET_Status",
- "dateTimestamp": "Mon Mar  9 19:29:44 2026",
- "timestampMillis": "1773055784793",
+ "dateTimestamp": "Tue Mar 10 12:13:30 2026",
+ "timestampMillis": "1773116010939",
  "status": {
-  "cmdId": "d3fb984d-1a87-4bcf-9efd-b54d7f176296",
+  "cmdId": "4e37db4d-f268-4da0-b0a1-b63abadf97e9",
   "state": "CS_FAILED"
  }
 }

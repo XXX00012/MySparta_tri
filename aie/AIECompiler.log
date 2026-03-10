@@ -1,6 +1,6 @@
 INFO: [aiecompiler 77-3355] ###[Start]: Reading in platform specification from /usr/xilinx/Vitis/2023.2/base_platforms/xilinx_vck190_base_202320_1/xilinx_vck190_base_202320_1.xpfm
 INFO: [aiecompiler 55-2099] Unable to extract 'pdi_files' from /usr/xilinx/Vitis/2023.2/base_platforms/xilinx_vck190_base_202320_1/hw/hw.xsa to /usr/xilinx/Vitis/2023.2/base_platforms/xilinx_vck190_base_202320_1/hw/extracted/vitis_design_wrapper_0. XSA may not contain 'pdi_files' or the destination directory is read-only
-INFO: [aiecompiler 55-2053] elapsed time for repository (/usr/xilinx/Vivado/2023.2/data/embeddedsw) loading 0 seconds
+INFO: [aiecompiler 55-2053] elapsed time for repository (/usr/xilinx/Vivado/2023.2/data/embeddedsw) loading 1 seconds
 INFO: [aiecompiler 77-3354] ###[Finish]:  Reading in platform specification from /usr/xilinx/Vitis/2023.2/base_platforms/xilinx_vck190_base_202320_1/xilinx_vck190_base_202320_1.xpfm
 INFO: [aiecompiler 21-403] Loading part xcvc1902-vsva2197-2MP-e-S
 INFO: [aiecompiler 77-3379] Extracted physical device part from platform is : xcvc1902-vsva2197-2MP-e-S 
