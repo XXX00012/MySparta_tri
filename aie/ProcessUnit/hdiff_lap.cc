@@ -30,6 +30,7 @@ void hdiff_lap(input_window_int32* row0_win,
   v8int32 lap_ij = null_v8int32();
   v8int32 lap_0  = null_v8int32();
 
+  // standard-style preload
   data_buf1 = upd_w(data_buf1, 0, window_readincr_v8(row3_win));
   data_buf1 = upd_w(data_buf1, 1, window_read_v8(row3_win));
 
