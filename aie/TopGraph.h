@@ -14,20 +14,20 @@ public:
     output_plio out_plio;
 
     TopStencilGraph(const std::string& graphID) {
-        const std::string base = "./data/";
+        const std::string base = "../data/";
 
         for (int i = 0; i < 5; i++) {
             in_plio[i] = input_plio::create(
                 graphID + "_in" + std::to_string(i),
                 plio_32_bits,
-                base + graphID + "_in" + std::to_string(i) + ".txt"
+                base + graphID + "_in" + std::to_string(i) + "_stream.txt"
             );
         }
 
         out_plio = output_plio::create(
             graphID + "_out0",
             plio_32_bits,
-            base + graphID + "_outputaie0.txt"
+            base + "aie_out_raw.txt"
         );
 
         connect<window<COL * NBYTES>>(in_plio[0].out[0], core.in[0]);
