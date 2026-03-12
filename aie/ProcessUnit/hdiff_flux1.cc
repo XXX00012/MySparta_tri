@@ -1,6 +1,6 @@
 #include <adf.h>
-#include "include.h"
-#include "hdiff.h"
+#include "ProcessUnit/include.h"
+#include "ProcessUnit/hdiff.h"
 
 using namespace adf;
 

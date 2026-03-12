@@ -13,10 +13,10 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-
+#include "TopGraph.h"
 using namespace adf;
 
-extern TopStencilGraph topStencil;
+
 
 namespace {
 

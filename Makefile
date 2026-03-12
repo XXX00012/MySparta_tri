@@ -15,9 +15,6 @@ XSA_DIR=./$(TARGET).xsa_dir
 PACKAGE_DIR = ./$(TARGET).xclbin_dir
 
 # File names and locations
-KERNEL = TopPL
-KERNEL_SRC = ./pl/$(KERNEL).cpp
-KERNEL_XO := ./pl/$(KERNEL).xo
 
 XSA := ./$(XSA_DIR)/svd.xsa
 HOST_SRC = ./ps/host.cpp
@@ -40,9 +37,7 @@ HW_EMU_CMD := ./launch_hw_emu.sh -g
 
 # Frequency Option
 AIE_FREQ = --freqhz=450000000
-KERNEL_FREQ = --freqhz=450000000
 
-KERNEL_FREQ_1 = --freqhz=450000000:TopPL_0.ap_clk
 
 
 # compile aie
@@ -58,13 +53,10 @@ else
 endif 
 
 # kernel build config
-VPP_XO_FLAGS += -c --mode hls --platform $(BASE_PLATFORM)
-VPP_XO_FLAGS += $(KERNEL_FREQ)
-	
-VPP_LINK_FLAGS := -l -t $(TARGET) --platform $(BASE_PLATFORM) $(KERNEL_XO) $(GRAPH_O) --save-temps -g --config $(CONFIG_FILE) -o $(XSA)
-VPP_LINK_FLAGS += --vivado.impl.jobs 256
 
-VPP_LINK_FLAGS += $(KERNEL_FREQ_1)
+	
+VPP_LINK_FLAGS := -l -t $(TARGET) --platform $(BASE_PLATFORM) $(GRAPH_O) --save-temps -g --config $(CONFIG_FILE) -o $(XSA)
+VPP_LINK_FLAGS += --vivado.impl.jobs 256
 
 VPP_FLAGS := $(VPP_LINK_FLAGS)
 
@@ -94,7 +86,7 @@ LDCLFLAGS := $(GCC_LIB)
 .PHONY: clean all kernels aie sim xsa host package run_emu
 
 
-all: aie kernels xsa host package
+all: aie  xsa host package
 sd_card: all
 
 ######################################################
@@ -102,13 +94,6 @@ sd_card: all
 # which is used as the output and from the *.cpp files.
 # Note : hw_emu and hw targets use the Unified CLI command to 
 # compile HLS kernels
-
-kernels: $(KERNEL_XO)
-$(KERNEL_XO): $(KERNEL_SRC)
-	mkdir -p $(XO_DIR)
-	$(VPP) $(VPP_XO_FLAGS) --config pl/TopPL.cfg | tee $(XO_DIR)/$(KERNEL).log
-
-
 
 
 aie: $(GRAPH_O)
@@ -142,10 +127,12 @@ $(XSA):
 
 ############################################################################################################################
 # For sw emulation, hw emulation and hardware, compile the PS code and generate the host.exe. This is needed for creating the sd_card.
-host:  
-	$(CXX) $(GCC_FLAGS) $(GCC_INCLUDES) -o host.o $(HOST_SRC)
-	$(CXX) *.o $(GCC_LIB) -std=c++20 -o $(HOST)
+host:
+	$(CXX) $(GCC_FLAGS) $(GCC_INCLUDES) -c $(HOST_SRC) -o host.o
+	$(CXX) $(GCC_FLAGS) $(GCC_INCLUDES) -c ./Work/ps/c_rts/aie_control_xrt.cpp -o aie_control_xrt.o
+	$(CXX) host.o aie_control_xrt.o $(GRAPH_O) $(GCC_LIB) -std=c++20 -o $(HOST)
 	@echo "COMPLETE: Host application created."
+	
 ############################################################################################################################
 
 ##################################################################################################
