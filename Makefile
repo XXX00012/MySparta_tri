@@ -127,6 +127,7 @@ $(XSA):
 
 ############################################################################################################################
 # For sw emulation, hw emulation and hardware, compile the PS code and generate the host.exe. This is needed for creating the sd_card.
+
 host:
 	$(CXX) $(GCC_FLAGS) $(GCC_INCLUDES) -c $(HOST_SRC) -o host.o
 	$(CXX) $(GCC_FLAGS) $(GCC_INCLUDES) -c ./Work/ps/c_rts/aie_control_xrt.cpp -o aie_control_xrt.o

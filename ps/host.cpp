@@ -12,6 +12,8 @@
 #include <fstream>
 #include <string>
 
+TopStencilGraph topStencil;
+
 namespace {
 
 constexpr int NUM_INPUTS = 5;
@@ -186,3 +188,4 @@ int main(int argc, char* argv[]) {
     xrtDeviceClose(dhdl);
     return 0;
 }
+
