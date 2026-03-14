@@ -1,3 +1,10 @@
+#pragma once
+
+#include <adf.h>
+#include "./ProcessGraph/StencilCoreGraph.h"
+
+using namespace adf;
+
 class TopStencilGraph : public graph {
 public:
     StencilCoreGraph core;
@@ -21,9 +28,9 @@ public:
         connect(in2.out[0], core.in[2]);
         connect(in3.out[0], core.in[3]);
         connect(in4.out[0], core.in[4]);
+
         connect(core.out, out0.in[0]);
     }
 };
 
-
-
+extern TopStencilGraph topStencil;
