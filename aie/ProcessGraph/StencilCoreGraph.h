@@ -73,17 +73,17 @@ public:
         dimensions(k_flux1.in[2]) = {COL};
 
         for (int i = 0; i < 4; ++i) {
-            dimensions(k_lap.out[i])      = {COL + LAP_META_WORDS};
-            dimensions(k_flux1.in[i + 3]) = {COL + LAP_META_WORDS};
+            dimensions(k_lap.out[i])      = {COL};
+            dimensions(k_flux1.in[i + 3]) = {COL};
         }
 
         for (int i = 0; i < 5; ++i) {
-            dimensions(k_flux1.out[i]) = {2 * COL + INTER_META_WORDS};
-            dimensions(k_flux2.in[i])  = {2 * COL + INTER_META_WORDS};
+            dimensions(k_flux1.out[i]) = {2 * COL};
+            dimensions(k_flux2.in[i])  = {2 * COL};
         }
 
-        dimensions(k_flux2.out[0]) = {COL + FINAL_META_WORDS};
-        dimensions(out)            = {COL + FINAL_META_WORDS};
+        dimensions(k_flux2.out[0]) = {COL};
+        dimensions(out)            = {COL};
 #endif
     }
 };
