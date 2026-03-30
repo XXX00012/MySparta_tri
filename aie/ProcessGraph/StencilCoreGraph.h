@@ -1,22 +1,20 @@
 #pragma once
+
 #include <adf.h>
 #include "../ProcessUnit/include.h"
+#include "../Config.h"
 #include "../ProcessUnit/hdiff.h"
 
 using namespace adf;
 
 class StencilCoreGraph : public graph {
 public:
-    port<input>  in[5];
+    port<input>  in;
     port<output> out;
 
     kernel k_lap;
     kernel k_flux1;
     kernel k_flux2;
-
-    static constexpr int LAP_META_WORDS   = 4;   // lap start/end
-    static constexpr int INTER_META_WORDS = 8;   // lap + flux1
-    static constexpr int FINAL_META_WORDS = 12;  // lap + flux1 + flux2
 
     StencilCoreGraph() {
 #if defined(__AIESIM__) || defined(__X86SIM__) || defined(__ADF_FRONTEND__)
@@ -28,62 +26,93 @@ public:
         source(k_flux1) = "ProcessUnit/hdiff_flux1.cc";
         source(k_flux2) = "ProcessUnit/hdiff_flux2.cc";
 
-        headers(k_lap)   = {"ProcessUnit/hdiff.h", "ProcessUnit/include.h"};
-        headers(k_flux1) = {"ProcessUnit/hdiff.h", "ProcessUnit/include.h"};
-        headers(k_flux2) = {"ProcessUnit/hdiff.h", "ProcessUnit/include.h"};
+        headers(k_lap)   = {"ProcessUnit/hdiff.h", "ProcessUnit/include.h", "Config.h"};
+        headers(k_flux1) = {"ProcessUnit/hdiff.h", "ProcessUnit/include.h", "Config.h"};
+        headers(k_flux2) = {"ProcessUnit/hdiff.h", "ProcessUnit/include.h", "Config.h"};
 
         runtime<ratio>(k_lap)   = 0.9;
         runtime<ratio>(k_flux1) = 0.9;
         runtime<ratio>(k_flux2) = 0.9;
 
-        location<kernel>(k_lap)   = tile(7, 0);
-        location<kernel>(k_flux1) = tile(7, 1);
-        location<kernel>(k_flux2) = tile(7, 2);
+        location<kernel>(k_lap)   = tile(hdiff_cfg::kTileCol, hdiff_cfg::kLapTileRow);
+        location<kernel>(k_flux1) = tile(hdiff_cfg::kTileCol, hdiff_cfg::kFlux1TileRow);
+        location<kernel>(k_flux2) = tile(hdiff_cfg::kTileCol, hdiff_cfg::kFlux2TileRow);
 
-        connect(in[0], k_lap.in[0]);
-        connect(in[1], k_lap.in[1]);
-        connect(in[2], k_lap.in[2]);
-        connect(in[3], k_lap.in[3]);
-        connect(in[4], k_lap.in[4]);
+        // ------------------------------------------------------------
+        // Single input broadcast to lap + flux1
+        // NOTE:
+        // Current kernel interfaces use input_buffer/output_buffer,
+        // so graph connections must be plain connect(...), not
+        // connect<adf::window<...>>.
+        // ------------------------------------------------------------
+        auto net_in_lap   = connect(in, k_lap.in[0]);
+        auto net_in_flux1 = connect(in, k_flux1.in[0]);
 
-        connect(in[1], k_flux1.in[0]);
-        connect(in[2], k_flux1.in[1]);
-        connect(in[3], k_flux1.in[2]);
+        // Explicit dimensions are required for buffer ports.
+        dimensions(k_lap.in[0])   = {hdiff_cfg::kWindowRows * COL};   // 5 * 256
+        dimensions(k_flux1.in[0]) = {hdiff_cfg::kWindowRows * COL};   // 5 * 256
 
-        connect(k_lap.out[0], k_flux1.in[3]);
-        connect(k_lap.out[1], k_flux1.in[4]);
-        connect(k_lap.out[2], k_flux1.in[5]);
-        connect(k_lap.out[3], k_flux1.in[6]);
+        fifo_depth(net_in_lap)   = hdiff_cfg::kInputObjectFifoDepth;  // 6
+        fifo_depth(net_in_flux1) = hdiff_cfg::kInputObjectFifoDepth;  // 6
 
-        connect(k_flux1.out[0], k_flux2.in[0]);
-        connect(k_flux1.out[1], k_flux2.in[1]);
-        connect(k_flux1.out[2], k_flux2.in[2]);
-        connect(k_flux1.out[3], k_flux2.in[3]);
-        connect(k_flux1.out[4], k_flux2.in[4]);
+        // ------------------------------------------------------------
+        // lap -> flux1 : 4 x 256
+        // ------------------------------------------------------------
+        auto net_lap_f1_0 = connect(k_lap.out[0], k_flux1.in[1]);
+        auto net_lap_f1_1 = connect(k_lap.out[1], k_flux1.in[2]);
+        auto net_lap_f1_2 = connect(k_lap.out[2], k_flux1.in[3]);
+        auto net_lap_f1_3 = connect(k_lap.out[3], k_flux1.in[4]);
 
-        connect(k_flux2.out[0], out);
+        dimensions(k_lap.out[0])  = {COL};
+        dimensions(k_lap.out[1])  = {COL};
+        dimensions(k_lap.out[2])  = {COL};
+        dimensions(k_lap.out[3])  = {COL};
 
-        for (int i = 0; i < 5; ++i) {
-            dimensions(in[i])       = {COL};
-            dimensions(k_lap.in[i]) = {COL};
-        }
-
-        dimensions(k_flux1.in[0]) = {COL};
         dimensions(k_flux1.in[1]) = {COL};
         dimensions(k_flux1.in[2]) = {COL};
+        dimensions(k_flux1.in[3]) = {COL};
+        dimensions(k_flux1.in[4]) = {COL};
 
-        for (int i = 0; i < 4; ++i) {
-            dimensions(k_lap.out[i])      = {COL};
-            dimensions(k_flux1.in[i + 3]) = {COL};
-        }
+        fifo_depth(net_lap_f1_0) = hdiff_cfg::kLapObjectFifoDepth;    // 5
+        fifo_depth(net_lap_f1_1) = hdiff_cfg::kLapObjectFifoDepth;    // 5
+        fifo_depth(net_lap_f1_2) = hdiff_cfg::kLapObjectFifoDepth;    // 5
+        fifo_depth(net_lap_f1_3) = hdiff_cfg::kLapObjectFifoDepth;    // 5
 
-        for (int i = 0; i < 5; ++i) {
-            dimensions(k_flux1.out[i]) = {2 * COL};
-            dimensions(k_flux2.in[i])  = {2 * COL};
-        }
+        // ------------------------------------------------------------
+        // flux1 -> flux2 : 5 x 512
+        // ------------------------------------------------------------
+        auto net_f1_f2_0 = connect(k_flux1.out[0], k_flux2.in[0]);
+        auto net_f1_f2_1 = connect(k_flux1.out[1], k_flux2.in[1]);
+        auto net_f1_f2_2 = connect(k_flux1.out[2], k_flux2.in[2]);
+        auto net_f1_f2_3 = connect(k_flux1.out[3], k_flux2.in[3]);
+        auto net_f1_f2_4 = connect(k_flux1.out[4], k_flux2.in[4]);
+
+        dimensions(k_flux1.out[0]) = {2 * COL};
+        dimensions(k_flux1.out[1]) = {2 * COL};
+        dimensions(k_flux1.out[2]) = {2 * COL};
+        dimensions(k_flux1.out[3]) = {2 * COL};
+        dimensions(k_flux1.out[4]) = {2 * COL};
+
+        dimensions(k_flux2.in[0])  = {2 * COL};
+        dimensions(k_flux2.in[1])  = {2 * COL};
+        dimensions(k_flux2.in[2])  = {2 * COL};
+        dimensions(k_flux2.in[3])  = {2 * COL};
+        dimensions(k_flux2.in[4])  = {2 * COL};
+
+        fifo_depth(net_f1_f2_0) = hdiff_cfg::kFluxInterObjectFifoDepth; // 6
+        fifo_depth(net_f1_f2_1) = hdiff_cfg::kFluxInterObjectFifoDepth; // 6
+        fifo_depth(net_f1_f2_2) = hdiff_cfg::kFluxInterObjectFifoDepth; // 6
+        fifo_depth(net_f1_f2_3) = hdiff_cfg::kFluxInterObjectFifoDepth; // 6
+        fifo_depth(net_f1_f2_4) = hdiff_cfg::kFluxInterObjectFifoDepth; // 6
+
+        // ------------------------------------------------------------
+        // flux2 -> out : 256
+        // ------------------------------------------------------------
+        auto net_out = connect(k_flux2.out[0], out);
 
         dimensions(k_flux2.out[0]) = {COL};
-        dimensions(out)            = {COL};
+
+        fifo_depth(net_out) = hdiff_cfg::kOutputObjectFifoDepth;      // 2
 #endif
     }
 };

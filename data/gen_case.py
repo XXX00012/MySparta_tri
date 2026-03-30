@@ -6,6 +6,8 @@ import numpy as np
 
 
 COL = 256
+GRID_ROWS = 256
+DEFAULT_DEPTH = 64
 
 
 # ----------------------------
@@ -430,22 +432,61 @@ def hdiff_multi_windows_exact(rows: np.ndarray, oob_mode: str = "zero") -> np.nd
 
 
 # ----------------------------
-# AIE input packing
+# depth-aware packing
 # ----------------------------
 
-def dump_human_readable_inputs(rows: np.ndarray, out_dir: Path, graph_id: str = "hdiff") -> None:
-    rows = np.asarray(rows, dtype=np.int32)
-    num_iter = rows.shape[0] - 4
+def make_depth_slices(kind: str,
+                      depth: int,
+                      grid_rows: int,
+                      cols: int,
+                      seed: int,
+                      low: int,
+                      high: int,
+                      const_value: int) -> np.ndarray:
+    slices = []
+    for d in range(depth):
+        slice_seed = seed + d if kind == "random" else seed
+        sl = make_input_rows(
+            kind=kind,
+            rows=grid_rows + 4,
+            cols=cols,
+            seed=slice_seed,
+            low=low,
+            high=high,
+            const_value=const_value,
+        )
+        slices.append(sl.astype(np.int32))
+    return np.stack(slices, axis=0).astype(np.int32)
+
+
+def gold_from_depth_slices(slices3d: np.ndarray, oob_mode: str = "zero") -> np.ndarray:
+    outs = []
+    for d in range(slices3d.shape[0]):
+        outs.append(hdiff_multi_windows_exact(slices3d[d], oob_mode=oob_mode))
+    return np.concatenate(outs, axis=0).astype(np.int32)
+
+
+def dump_human_readable_inputs_depthwise(slices3d: np.ndarray, out_dir: Path, graph_id: str = "hdiff") -> None:
+    depth, rows_with_halo, _ = slices3d.shape
+    num_iter_per_depth = rows_with_halo - 4
+
     for i in range(5):
-        mat = rows[i:i + num_iter].astype(np.int32)
+        mats = []
+        for d in range(depth):
+            mats.append(slices3d[d, i:i + num_iter_per_depth])
+        mat = np.concatenate(mats, axis=0).astype(np.int32)
         write_matrix_txt(out_dir / f"{graph_id}_in{i}.txt", mat)
 
 
-def dump_aie_stream_inputs(rows: np.ndarray, out_dir: Path, graph_id: str = "hdiff") -> None:
-    rows = np.asarray(rows, dtype=np.int32)
-    num_iter = rows.shape[0] - 4
+def dump_aie_stream_inputs_depthwise(slices3d: np.ndarray, out_dir: Path, graph_id: str = "hdiff") -> None:
+    depth, rows_with_halo, _ = slices3d.shape
+    num_iter_per_depth = rows_with_halo - 4
+
     for i in range(5):
-        stream = rows[i:i + num_iter].reshape(-1).astype(np.int32)
+        chunks = []
+        for d in range(depth):
+            chunks.append(slices3d[d, i:i + num_iter_per_depth].reshape(-1))
+        stream = np.concatenate(chunks).astype(np.int32)
         write_stream_txt(out_dir / f"{graph_id}_in{i}_stream.txt", stream)
 
 
@@ -457,11 +498,17 @@ def main() -> None:
     base_dir = Path(__file__).resolve().parent
 
     ap = argparse.ArgumentParser(
-        description="Generate AIE-style golden/input streams for arbitrary iter count on current 256-wide lap/flux1/flux2 implementation."
+        description="Generate depth-aware AIE-style golden/input streams for the current 256-wide lap/flux1/flux2 implementation."
     )
+    ap.add_argument("--skip-gold", action="store_true",
+                    help="only generate input/stream files, do not compute gold")
     ap.add_argument("--data-dir", type=Path, default=base_dir)
-    ap.add_argument("--iter", type=int, default=32, dest="iter_cnt",
-                    help="number of output windows / host iter count")
+    ap.add_argument("--grid-rows", type=int, default=GRID_ROWS,
+                    help="number of output rows per depth plane")
+    ap.add_argument("--depth", type=int, default=DEFAULT_DEPTH,
+                    help="number of independent depth planes")
+    ap.add_argument("--iter", type=int, default=None, dest="iter_cnt",
+                    help="optional host iter count; default = grid_rows * depth")
     ap.add_argument("--cols", type=int, default=COL)
     ap.add_argument("--kind", choices=["zeros", "const", "ramp", "checker", "impulse", "random"], default="random")
     ap.add_argument("--seed", type=int, default=0)
@@ -472,18 +519,28 @@ def main() -> None:
     ap.add_argument("--oob-mode", choices=["zero", "clamp", "periodic"], default="zero")
     args = ap.parse_args()
 
-    if args.iter_cnt <= 0:
-        raise ValueError("--iter must be positive")
+    if args.grid_rows <= 0:
+        raise ValueError("--grid-rows must be positive")
+    if args.depth <= 0:
+        raise ValueError("--depth must be positive")
     if args.cols != COL:
         raise ValueError(f"this flow expects cols={COL}")
+
+    expected_iter = args.grid_rows * args.depth
+    if args.iter_cnt is None:
+        args.iter_cnt = expected_iter
+    elif args.iter_cnt != expected_iter:
+        raise ValueError(
+            f"--iter must equal grid_rows * depth = {expected_iter}, got {args.iter_cnt}"
+        )
 
     data_dir = args.data_dir
     data_dir.mkdir(parents=True, exist_ok=True)
 
-    total_rows = args.iter_cnt + 4
-    rows = make_input_rows(
+    slices3d = make_depth_slices(
         kind=args.kind,
-        rows=total_rows,
+        depth=args.depth,
+        grid_rows=args.grid_rows,
         cols=COL,
         seed=args.seed,
         low=args.low,
@@ -494,19 +551,22 @@ def main() -> None:
     input_txt = data_dir / "input.txt"
     gold_txt = data_dir / "gold_out.txt"
 
-    write_matrix_txt(input_txt, rows)
-    rows_reload = read_matrix_txt(input_txt, rows=total_rows, cols=COL)
+    # 便于人工查看：把所有 plane 的原始源数据按 plane 顺序摊平写出
+    write_matrix_txt(input_txt, slices3d.reshape(-1, COL))
 
-    gold = hdiff_multi_windows_exact(rows_reload, oob_mode=args.oob_mode)
-    write_matrix_txt(gold_txt, gold)
+    if not args.skip_gold:
+        gold = gold_from_depth_slices(slices3d, oob_mode=args.oob_mode)
+        write_matrix_txt(gold_txt, gold)
 
-    dump_human_readable_inputs(rows_reload, data_dir, graph_id=args.graph_id)
-    dump_aie_stream_inputs(rows_reload, data_dir, graph_id=args.graph_id)
+    dump_human_readable_inputs_depthwise(slices3d, data_dir, graph_id=args.graph_id)
+    dump_aie_stream_inputs_depthwise(slices3d, data_dir, graph_id=args.graph_id)
 
-    print(f"generated {args.iter_cnt} windows")
-    print(f"input rows   : {rows_reload.shape[0]} x {rows_reload.shape[1]}")
-    print(f"gold output  : {gold.shape[0]} x {gold.shape[1]}")
-    print(f"stream length: each is {args.iter_cnt * COL} scalars")
+    print(f"logical workload : {args.grid_rows} x {COL} x {args.depth}")
+    print(f"host iter_cnt    : {args.iter_cnt}")
+    print(f"source rows/plane: {args.grid_rows + 4}")
+    if not args.skip_gold:
+        print(f"gold output      : {gold.shape[0]} x {gold.shape[1]}")
+    print(f"stream length    : each is {args.iter_cnt * COL} scalars")
 
 
 if __name__ == "__main__":

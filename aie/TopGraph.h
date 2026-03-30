@@ -1,7 +1,8 @@
 #pragma once
 
 #include <adf.h>
-#include "./ProcessGraph/StencilCoreGraph.h"
+#include <string>
+#include "ProcessGraph/StencilCoreGraph.h"
 
 using namespace adf;
 
@@ -9,27 +10,28 @@ class TopStencilGraph : public graph {
 public:
     StencilCoreGraph core;
 
-    input_gmio in0;
-    input_gmio in1;
-    input_gmio in2;
-    input_gmio in3;
-    input_gmio in4;
-    output_gmio out0;
+    input_plio  in_plio[1];
+    output_plio out_plio[1];
 
-    TopStencilGraph()
-        : in0(input_gmio::create("hdiff_gmio_in0", 64, 1000)),
-          in1(input_gmio::create("hdiff_gmio_in1", 64, 1000)),
-          in2(input_gmio::create("hdiff_gmio_in2", 64, 1000)),
-          in3(input_gmio::create("hdiff_gmio_in3", 64, 1000)),
-          in4(input_gmio::create("hdiff_gmio_in4", 64, 1000)),
-          out0(output_gmio::create("hdiff_gmio_out0", 64, 1000)) {
-        connect(in0.out[0], core.in[0]);
-        connect(in1.out[0], core.in[1]);
-        connect(in2.out[0], core.in[2]);
-        connect(in3.out[0], core.in[3]);
-        connect(in4.out[0], core.in[4]);
+    TopStencilGraph(const std::string& graphID) {
+        const std::string base = "./data/";
 
-        connect(core.out, out0.in[0]);
+        in_plio[0] = input_plio::create(
+            graphID + "_in0",
+            plio_32_bits,
+            base + "input_plio.txt"
+        );
+
+        out_plio[0] = output_plio::create(
+            graphID + "_out0",
+            plio_32_bits,
+            base + "TestOutputS.txt"
+        );
+
+ 
+        connect<>(in_plio[0].out[0], core.in);
+        connect<>(core.out, out_plio[0].in[0]);
+
     }
 };
 
